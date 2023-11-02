@@ -1,0 +1,70 @@
+-- Show item information for all items that have been included on an invoice. Show common columns only once --
+SELECT *
+FROM item
+NATURAL JOIN invoice;
+
+
+-- Show customers and their invoices. Include all customers whether or not they have an invoice --
+SELECT c.first_name, c.last_name, inv.*
+FROM customer c
+LEFT OUTER JOIN invoice inv ON c.customer_id = inv.customer_id;
+
+
+-- Show customers (first and last name) that picked up (date out) their dry cleaning between September 1, 2019 and September 30, 2019 --
+SELECT c.first_name, c.last_name, inv.date_out
+FROM customer c
+INNER JOIN invoice inv ON c.customer_id = inv.customer_id
+WHERE date_out BETWEEN '2019-09-01' AND '2019-09-30';
+
+
+-- Show customers (first and last name) and their total number of invoices. Give the total column an alias of total_invoices --
+SELECT c.first_name, c.last_name, Count(invoice_id) AS total_invoices
+FROM customer c
+INNER JOIN invoice inv ON c.customer_id = inv.customer_id
+GROUP BY c.customer_id;
+
+
+-- Show customers (first and last name) that have had more than $500 worth of dry cleaning done. Give the total cost an alias of total_dry_cleaning --
+SELECT c.first_name, c.last_name, SUM(it.price * invt.quantity) AS total_dry_cleaning
+FROM customer c
+INNER JOIN invoice inv ON c.customer_id = inv.customer_id
+INNER JOIN invoice_item invt ON inv.invoice_id = invt.invoice_id
+INNER JOIN item it ON invt.item_id = it.item_id
+GROUP BY c.customer_id
+HAVING total_dry_cleaning > '500'
+;
+
+
+-- Show the invoice id, subtotal (price times quantity), tax (subtotal times 7.5% tax rate), and total (subtotal plus tax) for all invoices where the subtotal is greater than $150. Set column aliases for subtotal, tax, and total. Sort by subtotal in descending order --
+SELECT invt.invoice_id, SUM(price * quantity) AS subtotal, SUM(price * quantity * 0.075) AS tax, SUM(price * quantity * 1.075) AS total
+FROM invoice_item invt
+INNER JOIN item i ON invt.item_id = i.item_id
+GROUP BY invt.item_id
+HAVING SUM(price * quantity) > 150
+ORDER BY subtotal DESC;
+
+
+-- Create a view called no_invoices. This view should display all information for customers who have no invoices. After creating this view, select from it and show only a list of customer emails --
+CREATE OR REPLACE VIEW `no_invoices` AS
+SELECT c.*
+FROM customer c
+LEFT OUTER JOIN invoice inv ON c.customer_id = inv.customer_id
+WHERE inv.customer_id IS NULL;
+
+SELECT email
+FROM no_invoices;
+
+
+-- Create a view called invoice_summary. This view should display the invoice ID, date in, date out, description, quantity, and price. After creating this view, select from it while showing invoice summaries for those containing men's shirts where the date out was on or after October 1, 2019 --
+CREATE OR REPLACE VIEW `invoice_summary` AS
+SELECT inv.invoice_id, inv.date_in, inv.date_out, it.description, it.price, invt.quantity
+FROM invoice inv
+INNER JOIN invoice_item invt ON inv.invoice_id = invt.invoice_id
+INNER JOIN item it ON invt.item_id = it.item_id
+;
+
+SELECT *
+FROM invoice_summary
+WHERE description = 'Men''s Shirt'
+AND date_out >= '2019-10-01'
+;
