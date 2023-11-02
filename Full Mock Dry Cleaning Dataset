@@ -1,4 +1,4 @@
--- All Insert Data for Dry Cleaning --
+-- Insert All Data for Dry Cleaning --
 
 -- Insert All Data --
 INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `street`, `city`, `state`, `zipcode`, `phone`, `email`)
