@@ -1,0 +1,188 @@
+* Using the mock workout studio data, this is a comprehensive dive into different SQL methods such as joins, views, and grants *
+
+-- Create Necessary Tables --
+CREATE TABLE IF NOT EXISTS client (
+  client_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(20) NOT NULL,
+  last_name VARCHAR(20) NOT NULL,
+  street VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  state CHAR (50) NOT NULL,
+  zipcode INT(10) NOT NULL,
+  email VARCHAR(55) NOT NULL,
+  type VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS class (
+  class_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(20) NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  cost DOUBLE,
+  days VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS trainer (
+  trainer_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(20) NOT NULL,
+  last_name VARCHAR(20) NOT NULL,
+  street VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  state CHAR (50) NOT NULL,
+  zipcode INT(10) NOT NULL,
+  email VARCHAR(55) NOT NULL,
+  fee DOUBLE NOT NULL,
+  client_id INT NOT NULL,
+  CONSTRAINT trainer_fk1 FOREIGN KEY (client_id) REFERENCES client(client_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS session (
+  session_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  trainer_id INT NOT NULL,
+  client_id INT NOT NULL,
+  `datetime` DATETIME NOT NULL,
+  notes TEXT(200) NOT NULL,
+  CONSTRAINT session_fk1 FOREIGN KEY (trainer_id) REFERENCES trainer(trainer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT session_fk2 FOREIGN KEY (client_id) REFERENCES client(client_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS attendance (
+  client_id INT NOT NULL,
+  class_id INT NOT NULL,
+  date DATE NOT NULL,
+  time TIME,
+  amount_paid DOUBLE,
+  CONSTRAINT attendance_fk1 FOREIGN KEY (client_id) REFERENCES client(client_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT attendance_fk2 FOREIGN KEY (class_id) REFERENCES class(class_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+-- #2A: add the gender attribute to the trainer table and remove the relationship and its associated attribute between trainer and client --  
+ALTER TABLE trainer
+ADD `gender` VARCHAR(50) NOT NULL,
+DROP FOREIGN KEY trainer_fk1,
+;
+
+ALTER TABLE trainer
+DROP `client_id`
+;
+
+
+-- #2B: Add a relationship between trainer and class by adding trainer ID as an attribute to class and linking it to trainer ID in trainer --
+ALTER TABLE class
+ADD `trainer_id` INT NOT NULL,
+ADD CONSTRAINT class_fk1 FOREIGN KEY (trainer_id) REFERENCES trainer(trainer_id) ON DELETE CASCADE ON UPDATE CASCADE
+;
+
+
+-- Add yourself as a client --
+INSERT INTO client
+VALUES (101, 'Nathan', 'Schnur', '1234 Street Way', 'Omaha', 'NE', '68131', 'nathanschnur@creighton.edu', 'Elite');
+
+-- Add a new class --
+INSERT INTO class
+VALUES (101, 'Extreme Yoga', '2023-10-30', '2023-11-30', '150', 'MWF', '65');
+
+-- Add yourself in attendance to the class you just created --
+INSERT INTO attendance
+VALUES (101, 101, '2023-11-06', '13:28:52', '150');
+
+-- Add a new session between yourself as a client with any trainer --
+INSERT INTO session
+VALUES (1001, 65, 101, '2023-11-21 14:00:05', 'Building Muscle');
+
+
+#Change the cost to be 1.5 times the trainer's fee for classes where the cost of the class is lower than the trainer's fee. 
+UPDATE class, trainer
+SET cost = 1.5 * fee
+WHERE cost < fee;
+
+#Show the ID, name, and duration of the five classes with the longest duration.
+SELECT class_id, name, `end_date`-`start_date` AS duration
+FROM class
+ORDER BY duration DESC
+LIMIT 5;
+
+-- Show the name of the client that has attended the most Barre classes --
+SELECT cl.first_name, cl.last_name, Count(name) AS Most_Barre_Classes
+FROM client cl
+INNER JOIN attendance a ON cl.client_id = a.client_id
+INNER JOIN class c ON a.class_id = c.class_id
+GROUP BY cl.client_id
+ORDER BY Most_Barre_Classes DESC
+LIMIT 1;
+
+-- Show the number of times each client whose first name begins with an A has been coached by a female trainer. Display the number of times in descending order --
+SELECT cl.first_name, cl.last_name, Count(s.session_id) AS number_of_sessions
+FROM client cl
+INNER JOIN session s ON cl.client_id = s.client_id
+INNER JOIN trainer t ON s.trainer_id = t.trainer_id
+WHERE t.gender = 'F'
+AND cl.first_name LIKE 'A%'
+GROUP BY cl.client_id
+ORDER BY number_of_sessions DESC;
+
+-- Show the total balances exceeding $750 that each client still owes for all classes that begin before the end of November. Note: You may need to complete #4 first for this to display meaningful data --
+SELECT cl.first_name, cl.last_name, c.start_date, Sum(c.cost-a.amount_paid) AS Balance_Due
+FROM client cl
+INNER JOIN attendance a ON cl.client_id = a.client_id
+INNER JOIN class c ON a.class_id = c.class_id
+WHERE c.start_date <= '2023-12-01'
+GROUP BY cl.first_name
+HAVING Sum(c.cost-a.amount_paid) > '750';
+
+-- Create a view called same_state that shows all client information, the session notes, and the trainer's name where the client and trainer reside in the same state. After creating the view, select from it showing only unique states where the clients Struggled --
+CREATE OR REPLACE VIEW `same_state` AS
+SELECT cl.*, s.notes, t.first_name AS trainer_first_name, t.last_name AS trainer_last_name, t.state AS trainer_state
+FROM client cl
+INNER JOIN session s ON cl.client_id = s.client_id
+INNER JOIN trainer t ON s.trainer_id = t.trainer_id
+WHERE cl.state = t.state;
+
+SELECT *
+FROM same_state
+WHERE notes = 'Struggled';
+
+-- Delete attendances where the attendance date is not between the start and end date of the class --
+DELETE a
+FROM attendance a
+INNER JOIN class c ON a.class_id = c.class_id
+WHERE a.date NOT BETWEEN c.start_date AND c.end_date;
+
+
+* Create Schema and Provide Accurate Privliges *
+
+-- Create the schema gym --
+CREATE SCHEMA IF NOT EXISTS gym;
+
+
+-- Create the user gym_manager. Make sure this user has a password --
+CREATE USER `gym_manager`
+IDENTIFIED BY `gym..manager..password`;
+
+-- Give the following privileges on the tables indicated below to the user gym_manager --
+REVOKE all
+ON gym.trainer
+FROM gym_manager;
+
+REVOKE GRANT OPTION
+ON gym.trainer
+FROM gym_manager;
+
+GRANT select
+ON gym.client
+TO gym_manager;
+
+GRANT select, insert, update
+ON gym.class
+TO gym_manager;
+
+GRANT all
+ON gym.session
+TO gym_manager
+WITH GRANT OPTION;
+
+GRANT all
+ON gym.attendance
+TO gym_manager
+WITH GRANT OPTION;
