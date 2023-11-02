@@ -1,0 +1,96 @@
+* This SQL provides insight into the customer data. *
+
+
+-- Create Necessary Table --
+
+CREATE TABLE IF NOT EXISTS customer (
+  customer_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(20) NOT NULL,
+  last_name VARCHAR(20) NOT NULL,
+  street VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  state CHAR (50) NOT NULL,
+  zipcode CHAR(10) NOT NULL,
+  phone VARCHAR(15) NOT NULL,
+  email VARCHAR(55) NULL
+);
+
+
+-- INSERT DATA --
+INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `street`, `city`, `state`, `zipcode`, `phone`, `email`)
+VALUES (1, 'Gilberta', 'Hutcheon', '94725 Muir Pass', 'Wichita', 'KS', '67215', '316-677-9646', 'ghutcheon0@somewhere.com'),
+(2, 'Caro', 'Burgwin', '4195 Del Mar Circle', 'Shawnee Mission', 'KS', '66205', '913-149-6813', 'cburgwin1@somewhere.com'),
+(3, 'Britt', 'Grollmann', '78223 Gina Lane', 'Shawnee Mission', 'KS', '66205', '913-235-4410', 'bgrollmann2@somewhere.com'),
+(4, 'Linzy', 'Cosgreave', '085 Center Point', 'Topeka', 'KS', '66699', '785-384-9128', 'lcosgreave3@somewhere.com'),
+(5, 'Tory', 'Spacie', '06 Reinke Plaza', 'Topeka', 'KS', '66622', '785-194-8297', 'tspacie4@somewhere.com'),
+(6, 'Seana', 'Gilluley', '60 Prentice Hill', 'Iowa City', 'IA', '52245', '319-121-8196', 'sgilluley5@somewhere.com'),
+(7, 'Sonya', 'Edmonston', '33182 Southridge Place', 'Waterloo', 'IA', '50706', '319-434-9187', 'sedmonston6@somewhere.com'),
+(8, 'Cher', 'O''Dowd', '562 Pennsylvania Terrace', 'Des Moines', 'IA', '50936', '515-229-1850', 'codowd7@somewhere.com'),
+(9, 'Kizzie', 'Harbisher', '852 Northfield Street', 'Sioux Falls', 'SD', '57193', '605-417-9703', 'kharbisher8@somewhere.com'),
+(10, 'Noellyn', 'Turpey', '793 Fisk Avenue', 'Topeka', 'KS', '66622', '785-693-5268', 'nturpey9@somewhere.com'),
+(11, 'Erminie', 'Saphin', '8724 Walton Parkway', 'Lincoln', 'NE', '68583', '402-106-9614', 'esaphina@somewhere.com'),
+(12, 'Kylie', 'Cleaton', '0 Towne Court', 'Des Moines', 'IA', '50393', '515-156-1494', 'kcleatonb@somewhere.com'),
+(13, 'Jedidiah', 'Bugbee', '666 Lotheville Junction', 'Sioux City', 'IA', '51105', '712-883-6007', NULL),
+(14, 'Natala', 'Allcott', '61 Forest Run Terrace', 'Wichita', 'KS', '67260', '316-702-6360', 'nallcottd@somewhere.com'),
+(15, 'Jonah', 'Emney', '39107 Swallow Avenue', 'Davenport', 'IA', '52804', '563-129-4110', 'jemneye@somewhere.com'),
+(16, 'Wit', 'Elstow', '6 Blaine Hill', 'Sioux Falls', 'SD', '57193', '605-933-8999', 'welstowf@somewhere.com'),
+(17, 'Roxi', 'Sellor', '0 Fallview Park', 'Des Moines', 'IA', '50369', '515-216-0698', 'rsellorg@somewhere.com'),
+(18, 'Richy', 'Middiff', '16341 Tennessee Point', 'Des Moines', 'IA', '50362', '515-385-7680', 'rmiddiffh@somewhere.com'),
+(19, 'Katharine', 'Sarfati', '1 Summit Lane', 'Des Moines', 'IA', '50305', '515-254-9735', 'ksarfatii@somewhere.com'),
+(20, 'Pavla', 'Rudkin', '2549 Monterey Lane', 'Omaha', 'NE', '68117', '402-905-9350', 'prudkinj@somewhere.com'),
+(21, 'Vittoria', 'Ashbridge', '83 Manley Lane', 'Omaha', 'NE', '68110', '402-713-2127', 'vashbridgek@somewhere.com'),
+(22, 'Rodie', 'Geistbeck', '892 Hollow Ridge Place', 'Sioux Falls', 'SD', '57198', '605-214-0089', 'rgeistbeckl@somewhere.com'),
+(23, 'Guillaume', 'Vuitte', '341 Shoshone Crossing', 'Sioux Falls', 'SD', '57105', '605-523-8002', 'gvuittem@somewhere.com'),
+(24, 'Martelle', 'Eckert', '927 Oak Junction', 'Omaha', 'NE', '68179', '402-802-8907', 'meckertn@somewhere.com'),
+(25, 'Michelle', 'Delahunty', '4553 Caliangt Alley', 'Topeka', 'KS', '66667', '785-445-4527', 'mdelahuntyo@somewhere.com'),
+(26, 'Nikolia', 'Oakley', '31370 Marcy Circle', 'Topeka', 'KS', '66699', '785-102-1530', NULL),
+(27, 'Damien', 'Mellings', '0910 Sunnyside Street', 'Cedar Rapids', 'IA', '52410', '319-699-7218', 'dmellingsq@somewhere.com'),
+(28, 'Homer', 'Cheasman', '6077 Jay Alley', 'Des Moines', 'IA', '50936', '515-184-9988', 'hcheasmanr@somewhere.com'),
+(29, 'Ruthie', 'Kenen', '23 Morrow Road', 'Shawnee Mission', 'KS', '66205', '816-422-0229', 'rkenens@somewhere.com'),
+(30, 'Flore', 'Sherrington', '22 Blackbird Junction', 'Shawnee Mission', 'KS', '66276', '913-887-2154', 'fsherringtont@somewhere.com'),
+(31, 'Bordy', 'Pitrollo', '185 Straubel Terrace', 'Omaha', 'NE', '68124', '402-111-1888', 'bpitrollou@somewhere.com'),
+(32, 'Godart', 'Dillistone', '31 Bashford Trail', 'Iowa City', 'IA', '52245', '319-199-5656', 'gdillistonev@somewhere.com'),
+(33, 'Doloritas', 'Molohan', '629 Swallow Pass', 'Des Moines', 'IA', '50330', '515-152-6755', 'dmolohanw@somewhere.com'),
+(34, 'Gary', 'Gaiger', '04902 Cody Junction', 'Sioux City', 'IA', '51105', '712-678-4594', 'ggaigerx@somewhere.com'),
+(35, 'Tilly', 'Tourot', '238 5th Alley', 'Des Moines', 'IA', '50981', '515-546-7107', 'ttouroty@somewhere.com'),
+(36, 'Ralf', 'Bradd', '4820 Starling Lane', 'Topeka', 'KS', '66642', '785-498-5920', 'rbraddz@somewhere.com'),
+(37, 'Jackson', 'Grenville', '940 Gina Point', 'Omaha', 'NE', '68134', '402-987-5208', NULL),
+(38, 'Bibbie', 'Deerness', '862 Hollow Ridge Street', 'Kansas City', 'KS', '66105', '913-820-0485', 'bdeerness11@somewhere.com'),
+(39, 'Tadio', 'Harrop', '1101 Lerdahl Drive', 'Kansas City', 'KS', '66112', '913-773-4932', 'tharrop12@somewhere.com'),
+(40, 'Sonnnie', 'Elnaugh', '28945 Forest Run Pass', 'Omaha', 'NE', '68110', '402-931-0581', 'selnaugh13@somewhere.com'),
+(41, 'Joete', 'Ranken', '92 Lighthouse Bay Hill', 'Wichita', 'KS', '67220', '316-356-7327', 'jranken14@somewhere.com'),
+(42, 'Elysha', 'Dun', '97048 Hagan Trail', 'Sioux Falls', 'SD', '57110', '605-556-7036', 'edun15@somewhere.com'),
+(43, 'Marsha', 'Steger', '68903 American Ash Pass', 'Topeka', 'KS', '66642', '785-264-8640', 'msteger16@somewhere.com'),
+(44, 'Isa', 'Noell', '8 Emmet Hill', 'Omaha', 'NE', '68105', '402-477-8864', 'inoell17@somewhere.com'),
+(45, 'Gaspar', 'Grose', '527 American Crossing', 'Shawnee Mission', 'KS', '66276', '913-577-9769', 'ggrose18@somewhere.com'),
+(46, 'Malachi', 'Croan', '75 Butternut Plaza', 'Wichita', 'KS', '67230', '316-694-1406', 'mcroan19@somewhere.com'),
+(47, 'Raff', 'Richards', '3 David Circle', 'Des Moines', 'IA', '50981', '515-248-1642', 'rrichards1a@somewhere.com'),
+(48, 'Valentijn', 'Britnell', '16270 Forest Run Trail', 'Shawnee Mission', 'KS', '66205', '816-184-7762', 'vbritnell1b@somewhere.com'),
+(49, 'Glyn', 'Munt', '7 Lien Trail', 'Des Moines', 'IA', '50315', '641-449-1476', 'gmunt1c@somewhere.com'),
+(50, 'Tristam', 'Piesing', '3084 Mockingbird Drive', 'Omaha', 'NE', '68164', '402-179-9369', 'tpiesing1d@somewhere.com');
+
+
+-- Using a query, show the structure (i.e. field, data type, null, key, default, auto_increment) of the customer table -- 
+DESCRIBE customer;
+
+-- Insert yourself as a new mock customer -- 
+INSERT INTO customer
+VALUES (51, 'Nathan', 'Schnur', '1234 Street Way', 'Omaha', 'NE', '68131', '123-456-7890', 'nathanschnur@creighton.edu');
+
+-- Change Jedidiah Bugbee's phone to 712-883-6006 --
+UPDATE customer
+SET phone = '712-883-6006'
+WHERE customer_id = 13;
+
+-- List the first name, last name, and phone for all customers whose second and third numbers of their phone number are 13 and their last name doesn't start with a G --
+SELECT first_name, last_name, phone
+FROM customer
+WHERE (phone LIKE '_13%')
+AND last_name NOT LIKE 'G%';
+
+
+-- Show all information for customers who have an email address. Sort customers by last name in ascending order and then by first name in descending order --
+SELECT *
+FROM customer
+WHERE (email LIKE '%')
+ORDER BY last_name DESC;
